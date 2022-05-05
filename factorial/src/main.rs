@@ -7,25 +7,21 @@ fn factorial(mut num: u64) -> u64 {
     loop {
         num = num - 1;
         if num == 0 {
-            break;
+            break r;
         }
         r = r * (num);
     }
-
-    r
 }
 
 fn main() {
 
-    let mut var = String::new();
-    let num: u64;
-
     loop {
+        let mut var = String::new();
         io::stdin()
             .read_line(&mut var)
             .expect("Failed to receive input.");
 
-        num = match var.trim().parse() {
+        let num: u64 = match var.trim().parse() {
             Ok(num) => {
                 num
             },
@@ -35,8 +31,7 @@ fn main() {
             },
         };
 
+        println!("Factorial: {}", factorial(num));
         break;
     }
-
-    println!("Factorial: {}", factorial(num));
 }
