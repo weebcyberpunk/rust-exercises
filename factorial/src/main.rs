@@ -5,11 +5,11 @@ fn factorial(mut num: u64) -> u64 {
     let mut r = num;
 
     loop {
-        num = num - 1;
         if num == 0 {
             break r;
         }
         r = r * (num);
+        num = num - 1;
     }
 }
 
