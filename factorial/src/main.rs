@@ -5,10 +5,14 @@ fn factorial(mut num: u64) -> u64 {
     let mut r = num;
 
     loop {
-        r = r * (num - 1);
         num = num - 1;
-        // TODO learn control flow
+        if num == 0 {
+            break;
+        }
+        r = r * (num);
     }
+
+    r
 }
 
 fn main() {
@@ -22,11 +26,13 @@ fn main() {
             .expect("Failed to receive input.");
 
         num = match var.trim().parse() {
-            Ok(num) => num,
+            Ok(num) => {
+                num
+            },
             Err(_) => {
                 println!("Please enter a number!");
                 continue;
-            }
+            },
         };
 
         break;
