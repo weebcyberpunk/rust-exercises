@@ -1,4 +1,5 @@
 use std::io;
+use std::io::Write;
 use std::cmp::Ordering;
 use rand::Rng;
 
@@ -8,7 +9,8 @@ fn main() {
     let num = rand::thread_rng().gen_range(1..101);
 
     loop {
-        println!("Please enter your guess.");
+        print!("Please enter your guess: ");
+        io::stdout().flush().expect("Failed to flush stdout");
 
         let mut guess = String::new();
 

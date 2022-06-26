@@ -1,10 +1,11 @@
-use std::io;
+use std::io::{self, Write};
 
 fn main() {
 
     let a = [1, 2, 3, 4, 5];
     
-    println!("Please enter an array index.");
+    print!("Please enter an array index: ");
+    io::stdout().flush().expect("Failed to flush stdout.");
 
     let mut index = String::new();
 

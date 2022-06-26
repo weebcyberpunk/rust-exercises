@@ -1,12 +1,21 @@
 use std::io;
-use std::io::Read;
-use std::fs::File;
 
-fn main() -> io::Result<()> {
-    let mut f = File::open("test.txt")?;
-    let mut string = String::new();
-    f.read_to_string(&mut string)?;
-    print!("{string}");
+fn main()  {
 
-    Ok(())
+    let mut txt = String::new();
+
+    loop {
+        let cont = match io::stdin().read_line(&mut txt) {
+            Ok(0) => false,
+            Ok(..) => true,
+            Err(_) => continue,
+        };
+
+        if cont {
+            print!("{}", txt);
+        } else {
+            println!("{}", txt);
+            break;
+        }
+    }
 }

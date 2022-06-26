@@ -1,15 +1,15 @@
-use std::io;
+use std::io::{self, Write};
 
 fn factorial(mut num: u64) -> u64 {
 
     let mut r = num;
 
     loop {
+        num = num - 1;
         if num == 0 {
             break r;
         }
         r = r * (num);
-        num = num - 1;
     }
 }
 
@@ -17,6 +17,8 @@ fn main() {
 
     loop {
         let mut var = String::new();
+        print!("Enter number: ");
+        io::stdout().flush().expect("Failed to flush stdout.");
         io::stdin()
             .read_line(&mut var)
             .expect("Failed to receive input.");
