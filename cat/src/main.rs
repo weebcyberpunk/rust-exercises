@@ -1,21 +1,12 @@
 use std::io;
 
-fn main()  {
-
-    let mut txt = String::new();
-
+fn main() {
     loop {
-        let cont = match io::stdin().read_line(&mut txt) {
-            Ok(0) => false,
-            Ok(..) => true,
+        let mut txt = String::new();
+        match io::stdin().read_line(&mut txt) {
+            Ok(0) => break,
+            Ok(..) => print!("{}", txt),
             Err(_) => continue,
-        };
-
-        if cont {
-            print!("{}", txt);
-        } else {
-            println!("{}", txt);
-            break;
         }
     }
 }
