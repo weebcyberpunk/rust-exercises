@@ -1,6 +1,8 @@
 use std::str::SplitWhitespace;
+use std::collections::HashMap;
 mod commands;
 use crate::commands_api::commands::Command;
+use crate::commands_api::commands::TwoArgs;
 
 pub fn cmd_parse(txt: &String) -> Result<Command, ()> {
 
@@ -10,7 +12,7 @@ pub fn cmd_parse(txt: &String) -> Result<Command, ()> {
     let ok = match txt_it.next() {
         Some(word) => { 
             if word == "add" {
-                command = Command::Add(Vec::new());
+                command = Command::Add(TwoArgs {arg1: String::new(), arg2: String::new()});
             } else if word == "list" {
                 command = Command::List(Vec::new());
             }
@@ -30,14 +32,18 @@ pub fn cmd_parse(txt: &String) -> Result<Command, ()> {
     }
 }
 
-pub fn run_cmd(cmd: Command) {
-
+pub fn run_cmd(cmd: Command, database: &mut HashMap<String, Vec<String>>) {
+    match cmd {
+        Command::Add(args) => commands::add(args, database),
+        Command::List(args) => commands::list(args, database),
+        Command::Null => println!("Tried to run Null!"),
+    }
 }
 
 fn known_cmd(cmd: &mut Command, iter: &mut SplitWhitespace) -> bool {
     match cmd {
         Command::Add(ref mut args) => {
-            args.push(String::new());
+            args.arg1 = String::new();
             let mut is_first = true;
             loop {
                 match iter.next() {
@@ -52,9 +58,9 @@ fn known_cmd(cmd: &mut Command, iter: &mut SplitWhitespace) -> bool {
                         if is_first {
                             is_first = false;
                         } else {
-                            args[0].push(' ');
+                            args.arg1.push(' ');
                         }
-                        args[0].push_str(word);
+                        args.arg1.push_str(word);
                     },
                     None => {
                         if is_first {
@@ -67,7 +73,7 @@ fn known_cmd(cmd: &mut Command, iter: &mut SplitWhitespace) -> bool {
                 };
             }
 
-            args.push(String::new());
+            args.arg2 = String::new();
             is_first = true;
             loop {
                 match iter.next() {
@@ -75,9 +81,9 @@ fn known_cmd(cmd: &mut Command, iter: &mut SplitWhitespace) -> bool {
                         if is_first {
                             is_first = false;
                         } else {
-                            args[1].push(' ');
+                            args.arg2.push(' ');
                         }
-                        args[1].push_str(word);
+                        args.arg2.push_str(word);
                     },
                     None => {
                         if is_first {
@@ -89,7 +95,38 @@ fn known_cmd(cmd: &mut Command, iter: &mut SplitWhitespace) -> bool {
                 }
             }
         },
-        Command::List(_) => println!("List command"),
+        Command::List(args) => {
+            let mut buffer = String::new();
+            let mut is_first = true;
+            loop {
+                match iter.next() {
+                    Some("and") => {
+                        if is_first {
+                            println!("ERROR: Expected argument before 'and'!");
+                            return false;
+                        } else {
+                            is_first = true;
+                        }
+                        args.push(buffer);
+                        buffer = String::new();
+                    },
+                    Some(word) => {
+                        if is_first {
+                            is_first = false;
+                        } else {
+                            buffer.push(' ');
+                        }
+                        buffer.push_str(word)
+                    },
+                    None => {
+                        if !is_first {
+                            args.push(buffer);
+                        }
+                        break;
+                    },
+                }
+            }
+        },
         Command::Null => {
             println!("ERROR: unknown command.");
             return false;
